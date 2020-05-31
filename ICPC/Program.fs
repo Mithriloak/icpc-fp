@@ -1,27 +1,20 @@
-﻿module ICPC
+﻿module ICPC 
 open System
 
 
-
-let FirstLetter x = match x with //checking that first letter is a lower case
-                    |[] -> false
-                    |x::rest -> match x with
-                                |'a' | 'b' | 'c' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' -> true
-                                | _ -> false                         
-
-let rec CharCheck x = match x with //checking that each char is either a lower case or a space, comma or full stop
-                      |[] -> true
-                      |y::rest -> match y with 
-                                 |'a' | 'b' | 'c' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z'| ' ' | ',' | '.' -> CharCheck rest
-                                 | _ -> false
+//Input Validation:
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
  
-let rec Fullstopcheck x = match x with //checking that the sentence ends in a full stop
-                          |y::rest -> match rest with
-                                      |[] -> match y with
-                                             | '.' -> true
-                                             | _ -> false
-                                      | _ -> Fullstopcheck rest
-                          |[] -> false
+let rec CheckFirst (input : string) = //checks that the first letters and the rest of the sentence are chars
+    match Char.IsLetter(input, 0) with 
+        | true -> true
+        | _ -> false
+
+let FullstopCheck (input:string) = //variant of the full stop check (higher efficiency.)
+    match input.Substring((input.Length - 1)) = "." with      
+    |true -> true
+    | _ -> false
+
  
 let rec SpaceCheck input = //checking full stops, spaces and comma rules
     match input with
@@ -56,27 +49,27 @@ let rec SpaceCheck input = //checking full stops, spaces and comma rules
                  | _ -> SpaceCheck tail
                  
     | [] -> true
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 
 let Checkinput (input:string) = //checks all the inputs at once 
     match input.Length >= 2 with
     |false -> None
     |true -> let x = Seq.toList input 
-             match FirstLetter x with
-             |false -> None
-             | _ -> match CharCheck x with
+             match CheckFirst input with
                     |false -> None
                     |true -> match SpaceCheck x with
                              |false -> None
-                             |true -> match Fullstopcheck x with
+                             |true -> match FullstopCheck input with
                                       |false -> None
                                       |true -> Some input
 
    
                                     
 let commaSprinkler input =
-    Checkinput input
+    match Checkinput input with
+    |None -> None
+    |Some input -> Some(input)
 
 let rivers (input:string) = //rivers input check
   let length = input.Length
